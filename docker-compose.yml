@@ -1,0 +1,38 @@
+version: '3.3'
+
+services:
+  db:
+   image: mysql:5.7
+   volumes:
+     - ${PWD}/data/db:/var/lib/mysql
+   restart: unless-stopped
+   # Only enable this if you have a low memory server, like 1GB
+   #   command: mysqld --innodb-buffer-pool-size=10M
+   environment:
+     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+     MYSQL_DATABASE: ${MYSQL_DATABASE}
+     MYSQL_USER: ${MYSQL_USER}
+     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    restart: unless-stopped
+    container_name: letsencrypt
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - URL=${URL}
+      - SUBDOMAINS=${SUBDOMAINS}
+      - VALIDATION=http
+      - EMAIL=${EMAIL}
+      - ONLY_SUBDOMAINS=false #optional
+      - STAGING=false #optional
+    volumes:
+      - $(PWD)/data/config:/config
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
