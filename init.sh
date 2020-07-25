@@ -95,6 +95,9 @@ echo "[+] Starting docker containers"
 source data/env.sh
 docker-compose up -d
 
+# Wait a bit so folders are created under data/config
+sleep 3
+
 echo "[+] Installing WordPress"
 cd data/config/www
 wget https://wordpress.org/latest.tar.gz
