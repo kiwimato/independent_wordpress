@@ -90,11 +90,11 @@ EOF
 
 echo "[+] Created data/env.sh which containers all the credentials that will be used by Wordpress"
 echo "[+] You will need them for initial configuration for https://${URL}"
-echo "[+] Starting docker containers"
-# docker-compose up -d
-echo "[+] Installing WordPress"
 
-# Install wordpress
+echo "[+] Starting docker containers"
+docker-compose up -d
+
+echo "[+] Installing WordPress"
 cd data/config/www
 wget https://wordpress.org/latest.tar.gz
 tar xzf latest.tar.gz
