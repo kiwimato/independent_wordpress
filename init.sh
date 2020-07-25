@@ -92,6 +92,7 @@ echo "[+] Created data/env.sh which containers all the credentials that will be 
 echo "[+] You will need them for initial configuration for https://${URL}"
 
 echo "[+] Starting docker containers"
+source data/env.sh
 docker-compose up -d
 
 echo "[+] Installing WordPress"
