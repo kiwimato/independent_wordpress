@@ -7,6 +7,7 @@ source functions.sh
 ONLY_SUBDOMAINS=false
 SUBDOMAINS=www,
 TZ=Europe/Amsterdam
+MAIN_FOLDER="$PWD"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -101,10 +102,11 @@ wget https://wordpress.org/latest.tar.gz
 tar xzf latest.tar.gz
 mv wordpress/* .
 chown 1000:1000 ./ -R
-rm -rf latest.tar.gz wordpress
+rm -rf latest.tar.gz wordpress index.html
 
 echo "[+] Created data/env.sh which containers all the credentials that will be used by Wordpress"
 echo "[+] Access the following link to finish setting up WordPress https://${URL}"
 echo "[*] You will need the following credentials:"
+cd $MAIN_FOLDER
 grep MYSQL_ data/env.sh | grep -v ROOT_
 echo "[*] For Database Host type in: db"
