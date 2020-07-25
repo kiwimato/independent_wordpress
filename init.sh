@@ -77,19 +77,16 @@ mkdir data
 cat > data/env.sh<<EOF
 export ADMIN_AUTH_USER="$(rpass 20)"
 export ADMIN_AUTH_PASSWORD="$(rpass 42)"
-export MYSQL_ROOT_PASSWORD="$(rpass 42)"
+export MYSQL_DATABASE="$(echo ${URL}_$(rpass 5) | tr '.' '_')"
 export MYSQL_USER="$(rpass 20)"
 export MYSQL_PASSWORD="$(rpass 42)"
-export MYSQL_DATABASE="$(echo ${URL}_$(rpass 5) | tr '.' '_')"
+export MYSQL_ROOT_PASSWORD="$(rpass 42)"
 export SUBDOMAINS=${SUBDOMAINS}
 export URL=${URL}
 export EMAIL=${EMAIL}
 export TZ=${TZ}
 export ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
 EOF
-
-echo "[+] Created data/env.sh which containers all the credentials that will be used by Wordpress"
-echo "[+] You will need them for initial configuration for https://${URL}"
 
 echo "[+] Starting docker containers"
 source data/env.sh
@@ -98,9 +95,16 @@ docker-compose up -d
 # Wait a bit so folders are created under data/config
 sleep 3
 
-echo "[+] Installing WordPress"
+echo "[+] Downloading and installing WordPress"
 cd data/config/www
 wget https://wordpress.org/latest.tar.gz
 tar xzf latest.tar.gz
+mv wordpress/* .
 chown 1000:1000 ./ -R
-rm -rf latest.tar.gz
+rm -rf latest.tar.gz wordpress
+
+echo "[+] Created data/env.sh which containers all the credentials that will be used by Wordpress"
+echo "[+] Access the following link to finish setting up WordPress https://${URL}"
+echo "[*] You will need the following credentials:"
+grep MYSQL_ data/env.sh | grep -v ROOT_
+echo "[*] For Database Host type in: db"
