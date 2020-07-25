@@ -25,12 +25,12 @@ RUN \
     /mkimage-alpine.bash -L \
     https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash && \
   chmod +x \
-	  /mkimage-alpine.bash && \
+    /mkimage-alpine.bash && \
     ./mkimage-alpine.bash  && \
   mkdir /root-out && \
   tar xf \
-	  /rootfs.tar.xz -C \
-	  /root-out && \
+    /rootfs.tar.xz -C \
+    /root-out && \
   sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
 
 # Runtime stage
@@ -54,13 +54,13 @@ ENV PS1="$(whoami)@$(hostname):$(pwd)\\$ " \
 RUN \
   echo "**** install build packages ****" && \
   apk add --no-cache --virtual=build-dependencies \
-	  curl \
+    curl \
     g++ \
     gcc \
     libffi-dev \
     openssl-dev \
     python3-dev \
-	  tar && \
+    tar && \
   echo "**** install runtime packages ****" && \
   apk add --no-cache \
     bash \
@@ -153,9 +153,9 @@ RUN \
   echo "**** add s6 overlay ****" && \
   curl -o \
     /tmp/s6-overlay.tar.gz -L \
-	  "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" && \
+    "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" && \
   tar xfz \
-	  /tmp/s6-overlay.tar.gz -C / && \
+    /tmp/s6-overlay.tar.gz -C / && \
   echo "**** create abc user and make our folders ****" && \
   groupmod -g 1000 users && \
   useradd -u 911 -U -d /config -s /bin/false abc && \
@@ -170,12 +170,12 @@ RUN \
 RUN \
   echo "**** configure nginx ****" && \
   echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> \
-	  /etc/nginx/fastcgi_params && \
+    /etc/nginx/fastcgi_params && \
   rm -f /etc/nginx/conf.d/default.conf && \
   echo "**** fix logrotate ****" && \
   sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf && \
   sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /config/log/logrotate.status#g' \
-	  /etc/periodic/daily/logrotate
+    /etc/periodic/daily/logrotate
 
 # environment settings
 ENV DHLEVEL=2048 ONLY_SUBDOMAINS=false AWS_CONFIG_FILE=/config/dns-conf/route53.ini
@@ -189,8 +189,8 @@ RUN \
     CERTBOT="certbot==${CERTBOT_VERSION}"; \
   fi && \
   pip3 install -U \
-	  pip \
-	  wheel && \
+    pip \
+    wheel && \
   pip3 install -U \
     ${CERTBOT} \
     certbot-dns-aliyun \
@@ -215,7 +215,7 @@ RUN \
     requests && \
   echo "**** remove unnecessary fail2ban filters ****" && \
   rm \
-	  /etc/fail2ban/jail.d/alpine-ssh.conf && \
+    /etc/fail2ban/jail.d/alpine-ssh.conf && \
   echo "**** copy fail2ban default action and filter to /default ****" && \
   mkdir -p /defaults/fail2ban && \
   mv /etc/fail2ban/action.d /defaults/fail2ban/ && \
@@ -223,23 +223,23 @@ RUN \
   echo "**** copy proxy confs to /default ****" && \
   mkdir -p /defaults/proxy-confs && \
   curl -o \
-	  /tmp/proxy.tar.gz -L \
-  	"https://github.com/linuxserver/reverse-proxy-confs/tarball/master" && \
+    /tmp/proxy.tar.gz -L \
+    "https://github.com/linuxserver/reverse-proxy-confs/tarball/master" && \
   tar xf \
     /tmp/proxy.tar.gz -C \
-	  /defaults/proxy-confs --strip-components=1 --exclude=linux*/.gitattributes --exclude=linux*/.github --exclude=linux*/.gitignore --exclude=linux*/LICENSE && \
+    /defaults/proxy-confs --strip-components=1 --exclude=linux*/.gitattributes --exclude=linux*/.github --exclude=linux*/.gitignore --exclude=linux*/LICENSE && \
   echo "**** configure nginx ****" && \
   rm -f /etc/nginx/conf.d/default.conf && \
   curl -o \
     /defaults/dhparams.pem -L \
-	  "https://lsio.ams3.digitaloceanspaces.com/dhparams.pem" && \
+    "https://lsio.ams3.digitaloceanspaces.com/dhparams.pem" && \
   echo "**** cleanup ****" && \
   apk del --purge \
-	  build-dependencies && \
+    build-dependencies && \
   for cleanfiles in *.pyc *.pyo; \
-	do \
-	  find /usr/lib/python3.*  -iname "${cleanfiles}" -exec rm -f '{}' + \
-	; done && \
+  do \
+    find /usr/lib/python3.*  -iname "${cleanfiles}" -exec rm -f '{}' + \
+  ; done && \
   rm -rf \
     /tmp/* \
     /root/.cache
