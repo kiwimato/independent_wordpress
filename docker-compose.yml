@@ -15,7 +15,10 @@ services:
      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   letsencrypt:
-    image: linuxserver/letsencrypt
+    #image: linuxserver/letsencrypt
+    build:
+      context: .
+    image: maihai/independent_wordpress
     restart: unless-stopped
     container_name: letsencrypt
     cap_add:
